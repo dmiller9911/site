@@ -26,17 +26,17 @@ export default class BlogPage extends Component {
     const pageNumber = (params && params.page) ? parseInt(params.page, 10) : 0
     const pagination = numberOfLatestPosts * pageNumber
     const offset = pagination + numberOfLatestPosts
-    const latestPosts = enhanceCollection(this.context.collection, {
+    const allPosts = enhanceCollection(this.context.collection, {
       filter: { layout: 'Post' },
       sort: 'date',
       reverse: true,
     })
-    .slice(pagination, offset)
-    let nextLink = <Link to={'/blog/page/1'}>Next</Link>
+    const latestPosts = allPosts.slice(pagination, offset)
+    const hasNextPage = allPosts.length > offset
+    const nextLink = hasNextPage && <Link to={`/blog/page/${pageNumber + 1}`}>Next</Link>
     let previousLink
-    if (params && params.page) {
+    if (pageNumber) {
       const prevNum = ((pageNumber - 1) === 0) ? '' : `page/${pageNumber - 1}`
-      nextLink = <Link to={`/blog/page/${pageNumber + 1}`}>Next</Link>
       previousLink = <Link to={`/blog/${prevNum}`}>Previous</Link>
     }
     let renderContent = (
